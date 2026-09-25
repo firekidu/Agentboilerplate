@@ -1,0 +1,83 @@
+name: nimble-rag
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: '3'
+services:
+  api:
+    build: .
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      AI_BACKEND: ${AI_BACKEND:-fake}
+      DATABASE_URL: ${DATABASE_URL:?Run scripts/setup_env.py}
+      QDRANT_URL: ${QDRANT_URL:-http://qdrant:6333}
+      QDRANT_API_KEY: ${QDRANT_API_KEY:?Run scripts/setup_env.py}
+      QDRANT_COLLECTION: ${QDRANT_COLLECTION:-knowledge}
+      API_KEYS_JSON: ${API_KEYS_JSON:?Run scripts/setup_env.py}
+      METRICS_KEY: ${METRICS_KEY:?Run scripts/setup_env.py}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      CHAT_MODEL: ${CHAT_MODEL:-gpt-4.1-mini}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-text-embedding-3-small}
+      EMBEDDING_DIMENSIONS: ${EMBEDDING_DIMENSIONS:-1536}
+      SCORE_THRESHOLD: ${SCORE_THRESHOLD:-0.30}
+      TOP_K: ${TOP_K:-5}
+      CHUNK_SIZE: ${CHUNK_SIZE:-1200}
+      CHUNK_OVERLAP: ${CHUNK_OVERLAP:-200}
+      MAX_FILE_BYTES: ${MAX_FILE_BYTES:-5000000}
+      MAX_DOCUMENT_CHARS: ${MAX_DOCUMENT_CHARS:-250000}
+      MAX_PDF_PAGES: ${MAX_PDF_PAGES:-100}
+      MAX_CHUNKS: ${MAX_CHUNKS:-300}
+      MAX_DOCUMENTS: ${MAX_DOCUMENTS:-100}
+      CHAT_PER_MINUTE: ${CHAT_PER_MINUTE:-20}
+      CHAT_PER_DAY: ${CHAT_PER_DAY:-500}
+      UPLOADS_PER_DAY: ${UPLOADS_PER_DAY:-30}
+      MAX_OUTPUT_TOKENS: ${MAX_OUTPUT_TOKENS:-600}
+      HISTORY_TURNS: ${HISTORY_TURNS:-4}
+    ports:
+      - '127.0.0.1:8000:8000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 2g
+    pids_limit: 128
+    logging: *logging
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: rag
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run scripts/setup_env.py}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?Run scripts/setup_env.py}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./deploy/init-db.sh:/docker-entrypoint-initdb.d/10-app-role.sh:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d rag']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    mem_limit: 1g
+    logging: *logging
+  qdrant:
+    image: qdrant/qdrant:v1.19.1
+    environment:
+      QDRANT__SERVICE__API_KEY: ${QDRANT_API_KEY:?Run scripts/setup_env.py}
+      QDRANT__TELEMETRY_DISABLED: 'true'
+    volumes:
+      - qdrant_data:/qdrant/storage
+    restart: unless-stopped
+    mem_limit: 2g
+    logging: *logging
+volumes:
+  postgres_data:
+  qdrant_data:

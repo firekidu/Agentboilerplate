@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.coverage
+.backup.lock
+htmlcov/
+data/
+backups/
+*.pem
+*.key
+*.log
+credentials*.json
+.DS_Store

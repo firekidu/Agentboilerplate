@@ -1,0 +1,17 @@
+{
+    email {$ACME_EMAIL}
+}
+{$DOMAIN} {
+    encode zstd gzip
+    request_body {
+        max_size 6MB
+    }
+    header Strict-Transport-Security "max-age=31536000"
+    @private path /metrics /docs /redoc /openapi.json
+    respond @private 404
+    reverse_proxy api:8000 {
+        transport http {
+            response_header_timeout 300s
+        }
+    }
+}

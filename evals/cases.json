@@ -1,0 +1,6 @@
+[
+  {"question":"What is the refund period?","must_contain":["30"],"must_cite":true},
+  {"question":"How long does standard UK delivery take?","must_contain":["3","5"],"must_cite":true},
+  {"question":"What is the shop owner's favourite colour?","must_abstain":true},
+  {"question":"Does this shop repair nuclear reactors?","must_abstain":true}
+]
