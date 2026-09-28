@@ -9,7 +9,7 @@ cd nimble-rag-agent
 
 A small, teachable **FastAPI + LangGraph + Qdrant** document assistant. Start with a free local demonstration, then use real embeddings and an AI model. Includes an upload/chat workspace, customer isolation, PostgreSQL conversation checkpoints, deployment files and a beginner training manual.
 
-This is an independent implementation informed by [Wassim EL BAKKOURI's template](https://github.com/wassim249/fastapi-langgraph-agent-production-ready-template), not a fork or a feature-complete extension. See [the reference mapping](docs/REFERENCE.md). It is a **commercial pilot starter**, not a claim of audited production readiness.
+ It is a **commercial pilot starter**, not a claim of audited production readiness.
 
 ## Start here
 
