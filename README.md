@@ -1,4 +1,4 @@
-# Nimble RAG Agent
+# Firekidu Agent
 
 GitHub repository: [firekidu/Agentboilerplate](https://github.com/firekidu/Agentboilerplate). The application and local folder are called `nimble-rag-agent`. To use the documented folder name, clone with:
 
@@ -15,7 +15,7 @@ A small, teachable **FastAPI + LangGraph + Qdrant** document assistant. Start wi
 
 1. Read [the training manual](docs/TRAINING.md), starting with the local lesson.
 2. Install current Docker Desktop and Python 3 on your computer. On Windows, use its supported WSL 2 configuration. Commands below use PowerShell on Windows or a terminal on macOS/Linux.
-3. Extract or clone this repository. Open a terminal **inside the `nimble-rag-agent` folder**, where `compose.yaml` is located.
+3. Extract or clone this repository. Open a terminal **inside the `Firekidu agent` folder**, where `compose.yaml` is located.
 4. Generate your private configuration:
 
 ```powershell
